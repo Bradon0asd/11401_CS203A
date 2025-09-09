@@ -20,4 +20,4 @@
  
 ---
 ### Repository Description
-#### This is Repo is for DS Course. Record learning process and experience.
+#### This is the Repo for Data Structures course, where I document my learning process and reflections. I hope this repository can showcase my progress and serve as an effective resource for future review.
