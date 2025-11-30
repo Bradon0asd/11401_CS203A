@@ -4,23 +4,45 @@ This assignment focuses on the design and observation of hash functions using C/
 Students are expected to implement and analyze the behavior of hash functions, 
 evaluate their efficiency, and understand their applications in computer science.
 
-Developer: [Your Name]  
-Email: [Your email]  
+Developer:  Kuan-Ti Chiang (Bradon)   
+Email:
+-   s1123306@mail.yzu.edu.tw 
+-   contact@bradon.cc  
 
 ## My Hash Function
 ### Integer Keys 
 - Formula / pseudocode:
   ```text
-  [Your implementation here]
+  Function myHashInt(key, m):
+    A = 0.6180339887498948482
+    v = key * A
+    fractional = v - integer part of v
+    return parseInt(m * fractional)
+  End Function
   ```
-- Rationale: [Explain your design choices and how they minimize collisions.]
+- Rationale: 
+  - Multiply key with Knuth’s number to spread values.
+  - Take fractional part to keep index in [0, m-1].
+  - Helps reduce collisions and makes indices more uniform.
 
 ### Non-integer Keys
 - Formula / pseudocode:
   ```text
-  [Your implementation here]
+  Function myHashString(key, m):
+    hash = 0  // Initialize hash value
+    For each character c in str
+        hash = hash XOR ((hash << 5) + (hash >> 2) + ASCII(c) + 1315423911)
+    End For
+    A = 0.6180339887498948482
+    v = key * A
+    fractional = v - integer part of v
+    return parseInt(m * fractional)
+  End Function
   ```
-- Rationale: [Explain your approach and its effectiveness for non-integer keys.]
+- Rationale: 
+  - Convert string to number using bit operations (based on PJW hash).
+  - Shift, XOR, and add – this mixes all bits of the string to make hash values more random and spread out.
+  - Multiply key with Knuth’s number to spread values.
 
 ## Experimental Setup
 - Table sizes tested (m): 10, 11, 37
@@ -31,12 +53,18 @@ Email: [Your email]
 - Standard: C23 and C++23
 
 ## Results
+### Integer Keys
 | Table Size (m) | Index Sequence         | Observation              |
 |----------------|------------------------|--------------------------|
-| 10             | 1, 2, 3, 4, ...        | Pattern repeats every 10 |
-| 11             | 10, 0, 1, 2, ...       | More uniform             |
-| 37             | 20, 21, 22, 23, ...    | Near-uniform             |
-
+| 10             | 9, 5, 2, 8, 4, 0, 6, 3, 9, 5, 5, 1, 7, 3, 9, 6, 2, 8, 4, 0        |Small table (non-prime), numbers repeat and many collisions happen.|
+| 11             | 10, 6, 2, 9, 4, 0, 7, 3, 10, 5, 5, 1, 8, 4, 10, 6, 2, 9, 5, 0       | Prime table, distribution is better, fewer collisions.remain.             |
+| 37             | 36, 22, 7, 30, 16, 2, 25, 11, 34, 20, 19, 5, 27, 13, 36, 22, 8, 31, 17, 3    | Large prime table, numbers are spread evenly, almost no collisions.             |
+### Non-Integer Keys
+| Table Size (m) | Index Sequence         | Observation              |
+|----------------|------------------------|--------------------------|
+| 10             | 6, 0, 5, 0, 1, 0, 7, 8, 8, 7        |Small table, many strings map to same index → collisions.|
+| 11             | 7, 0, 6, 0, 1, 0, 8, 9, 9, 7       | Prime table reduces collisions slightly.             |
+| 37 | 25, 2, 20, 1, 5, 1, 29, 30, 31, 26    | Large prime table spreads values well → fewer collisions.|
 ## Compilation, Build, Execution, and Output
 
 ### Compilation
@@ -79,100 +107,35 @@ Email: [Your email]
   ```
 
 ### Result Snapshot
-- Example output for integers:
-  ```
-  === Hash Function Observation (C Version) ===
-
-  === Table Size m = 10 ===
-  Key     Index
-  -----------------
-  21      1
-  22      2
-  ...
-
-  === Table Size m = 11 ===
-  Key     Index
-  -----------------
-  21      10
-  22      0
-  ...
-
-  === Table Size m = 37 ===
-  Key     Index
-  -----------------
-  21      21
-  22      22
-  ...
-
-  === Hash Function Observation (C++ Version) ===
-
-  === Table Size m = 10 ===
-  Key     Index
-  -----------------
-  21      1
-  22      2
-  ...
-
-  === Table Size m = 11 ===
-  Key     Index
-  -----------------
-  21      10
-  22      0
-  ...
-
-  === Table Size m = 37 ===
-  Key     Index
-  -----------------
-  21      21
-  22      22
-  ...
-  ```
-
-- Example output for strings:
-  ```
-  === String Hash (m = 10) ===
-  Key     Index
-  -----------------
-  cat     0
-  dog     0
-  ...
-
-  === String Hash (m = 11) ===
-  Key     Index
-  -----------------
-  cat     0
-  dog     0
-  ...
-
-  === String Hash (m = 37) ===
-  Key     Index
-  -----------------
-  cat     0
-  dog     0
-  ...
-  ```
-
-- Observations: Outputs align with the analysis, showing better distribution with prime table sizes.
-- Example output for integers:
-  ```
-  Hash table (m=10): [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]
-  Hash table (m=11): [10, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-  Hash table (m=37): [20, 21, 22, 23, 24, 25, 26, 27, 28, 29, ...]
-  ```
-- Example output for strings:
-  ```
-  Hash table (m=10): ["cat", "dog", "bat", "cow", "ant", ...]
-  Hash table (m=11): ["fox", "cat", "dog", "bat", "cow", ...]
-  Hash table (m=37): ["bee", "hen", "pig", "fox", "cat", ...]
-  ```
+- Output for integers:
+  - m = 10
+    <img src="./imgs/int-m10.png" width="100"/> 
+  - m = 11
+    <img src="./imgs/int-m11.png" width="100"/>
+  - m = 37
+    <img src="./imgs/int-m37.png" width="100"/>
+- Output for strings:
+  - m = 10
+    <img src="./imgs/str-m10.png" width="100"/> 
+  - m = 11
+    <img src="./imgs/str-m11.png" width="100"/>
+  - m = 37
+    <img src="./imgs/str-m37.png" width="100"/>
+  
 - Observations: Outputs align with the analysis, showing better distribution with prime table sizes.
 
 ## Analysis
-- Prime vs non-prime `m`: Prime table sizes generally result in better distribution and fewer collisions.
-- Patterns or collisions: Non-prime table sizes tend to produce repetitive patterns, leading to more collisions.
-- Improvements: Use a prime table size and a well-designed hash function to enhance distribution.
+- Prime table sizes give better spread and fewer collisions.
+- Non-prime table sizes repeat patterns and have more collisions.
+- Multiplicative hashing spreads keys better than squared hashing.
+- Bigger table sizes reduce collisions.
 
 ## Reflection
-1. Designing hash functions requires balancing simplicity and effectiveness to minimize collisions.
-2. Table size significantly impacts the uniformity of the hash distribution, with prime sizes performing better.
-3. The design using a prime table size and a linear transformation formula produced the most uniform index sequence.
+1. A good hash function should be simple and spread keys evenly.simplicity and effectiveness to minimize collisions.
+2. Prime table sizes work better than non-prime sizes.
+3. Multiplicative hashing with Knuth’s number gives the most uniform results.
+
+## Reference
+1. [Introduction to Algorithms, 2nd Edition, Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest, Clifford Stein. MIT Press / McGraw‑Hill, 2001.](https://mcube.lab.nycu.edu.tw/~cfung/docs/books/cormen2001algorithms.pdf)
+2. [PJW_hash_function “PJW hash function”, Wikipedia.](https://en.wikipedia.org/wiki/PJW_hash_function)
+3. [HMC CS070 Homework – Hash Functions (Hash functions overview and examples) — Harvey Mudd College CS070 class materials.](https://www.cs.hmc.edu/~geoff/classes/hmc.cs070.200101/homework10/hashfuncs.html)
