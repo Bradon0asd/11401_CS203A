@@ -15,25 +15,28 @@
 
 #include "hash_fn.h"
 
-int myHashInt(int key, int m) {
+int myHashInt(int key, int m)
+{
     // TODO: replace with your own design
-    const double A = 0.6180339887498948482; // Knuth's multiplicative constant (from CLRS, "Introduction to Algorithms", page 232)
-    double value = key * A; // Multiply the key
-    double fractional = value - (long long)value;  // Select the fractional Part
+    const double A = 0.6180339887498948482;       // Knuth's multiplicative constant (from CLRS, "Introduction to Algorithms", page 232)
+    double value = key * A;                       // Multiply the key
+    double fractional = value - (long long)value; // Select the fractional Part
     return (int)(m * fractional);
 }
 
-int myHashString(const char* str, int m) {
+int myHashString(const char *str, int m)
+{
     unsigned long hash = 0;
     // TODO: replace with your own design
     const double A = 0.6180339887498948482;
-    while (*str) {
+    while (*str)
+    {
         unsigned long c = (unsigned long)(*str);
-        hash ^= (hash << 5) + (hash >> 2) + c + 1315423911UL; //variant of PJW_hash_function 
+        hash ^= (hash << 5) + (hash >> 2) + c + 1315423911UL; // variant of PJW_hash_function
         /*
             XOR new hash content with previous hash
             The new content each SHIFT left 5 bits and right 2 bits,
-            Final add the big constant value to mix bits. 
+            Final add the big constant value to mix bits.
         */
         str++;
     }
