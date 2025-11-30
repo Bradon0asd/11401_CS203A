@@ -17,11 +17,22 @@
 
 int myHashInt(int key, int m) {
     // TODO: replace with your own design
-    return key % m;  // division method example
+    const double A = 0.6180339887498948482;
+    double v = key * A;
+    double fractional = v - (long long)v;  // fractional Part
+    return (int)(m * fractional);
 }
 
 int myHashString(const char* str, int m) {
     unsigned long hash = 0;
     // TODO: replace with your own design
-    return (int)(hash % m); // basic division method
+    const double A = 0.6180339887498948482;
+    while (*str) {
+        unsigned long c = (unsigned long)(*str);
+        hash ^= (hash << 5) + (hash >> 2) + c + 1315423911UL;
+        str++;
+    }
+    double v = hash * A;
+    double fractional = v - (long long)v;
+    return (int)(m * fractional);
 }
